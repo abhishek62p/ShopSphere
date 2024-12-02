@@ -8,6 +8,7 @@ import { ErrorCode } from "../exceptions/root";
 import { UnprocessableEntity } from "../exceptions/validatation";
 import { SignupSchema } from "../schema/user";
 import { NotFoundException } from "../exceptions/not-found";
+import { UnauthorizedException } from "../exceptions/unauthorized";
 
 export const signup = async (req:Request, res:Response, next: NextFunction) => {
     try {
@@ -63,5 +64,5 @@ export const login = async (req:Request, res: Response, next: NextFunction) => {
 }
 
 export const me = async (req: Request, res: Response) => {
-    res.json(req.user)
+    console.log(req.user)
 }
