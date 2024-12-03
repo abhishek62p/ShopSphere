@@ -32,7 +32,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
             next(new UnauthorizedException('Unauthorized', ErrorCode.UNAUTHORIZED))
         }
         // 5. to attach the user to the current request object
-        req.user = user
+        req.user = user as any
         next()
     } catch (error) {
         next(new UnauthorizedException('Unauthorized', ErrorCode.UNAUTHORIZED))

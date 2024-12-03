@@ -6,6 +6,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx nodemon"
   },
+
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["node", "express"]
+  },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
