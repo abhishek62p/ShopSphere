@@ -12,15 +12,15 @@ interface JwtPayload {
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     // 1. extract the token from header
-    const authHeader = req.headers.authorization as string
+    const token = req.headers.authorization as string
     // 2. if token is not present, throw an error of unauthorized
-    if(!authHeader || authHeader.startsWith('Bearer ')) {
+    if(!token) {
         next(new UnauthorizedException('Unauthorized', ErrorCode.UNAUTHORIZED))
     }
-    const token = authHeader.split(" ")[1];
-    if(!token) {
-        return next(new UnauthorizedException("Unauthorized", ErrorCode.UNAUTHORIZED));
-    }
+    // const token = authHeader.split(" ")[1];
+    // if(!token) {
+    //     return next(new UnauthorizedException("Unauthorized", ErrorCode.UNAUTHORIZED));
+    // }
     try {
         // 3. if the token is present, verfiy that token and extract the payload
         const payload = jwt.verify(token, JWT_SECRET) as JwtPayload
