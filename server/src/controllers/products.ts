@@ -48,15 +48,27 @@ export const deleteProducts = async (req: Request, res: Response, next: NextFunc
         next(new NotFoundException('Product not Found', ErrorCode.PRODUCT_NOT_FOUND))
     }
 }
-export const listProducts = async (req: Request, res: Response) => {}
+export const listProducts = async (req: Request, res: Response) => {
+    const count = await prismaClient.product.count();
+    const skip = parseInt(req.query.skip as string, 10) || 0;
+    const products = await prismaClient.product.findMany({
+        skip: skip || 0,
+        take: 5
+    })
+    res.json({
+        count,
+        data: products
+    })
+}
 export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const productId = +req.params.id;
         const getProduct = await prismaClient.product.findFirst({where: {id: productId}})
-        res.send(getProduct)
+        // res.send(getProduct)
         res.json({
             getProduct: getProduct
         })
+        console.log(getProduct)
     } catch (error) {
         next(new NotFoundException('Product not Found', ErrorCode.PRODUCT_NOT_FOUND))
     }
