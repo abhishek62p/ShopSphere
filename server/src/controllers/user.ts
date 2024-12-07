@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { AddressSchema } from "../schema/user";
+import { AddressSchema, UpdateSchema } from "../schema/user";
 import { NotFoundException } from "../exceptions/not-found";
 import { ErrorCode } from "../exceptions/root";
-import { User } from "@prisma/client";
+import { Address, User } from "@prisma/client";
 import { prismaClient } from "../routes";
+import { BadRequestsException } from "../exceptions/bad_request";
 
 export const addAddress = async (req: Request, res: Response, next: NextFunction) => {
     AddressSchema.parse(req.body);
@@ -50,4 +51,43 @@ export const listAddress = async (req: Request, res: Response) => {
         msg: "list of address",
         addresses: address
     })
+}
+
+export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+    const validatedData = UpdateSchema.parse(req.body)
+    let shippingAddress: Address
+    let billingAddress: Address
+    if (validatedData.defaultShippingAddress) {
+        try {
+            shippingAddress = await prismaClient.address.findFirstOrThrow({
+                where: {
+                    id: validatedData.defaultShippingAddress
+                }
+            })
+            if(shippingAddress.userId != req.user.id) {
+                throw new BadRequestsException('Address does not belong to user', ErrorCode.ADDRESS_DOES_BELONG)
+            }
+        } catch (error) {
+            next(new NotFoundException('Address not Found', ErrorCode.ADDRESS_NOT_FOUND))
+        }
+    }
+    if (validatedData.defaultBillingAddress) {
+        try {
+            billingAddress = await prismaClient.address.findFirstOrThrow({
+                where: {
+                    id: validatedData.defaultBillingAddress
+                }
+            })
+            if(billingAddress.userId != req.user.id) {
+                throw new BadRequestsException('Address does not belong to user', ErrorCode.ADDRESS_DOES_BELONG)
+            }
+        } catch (error) {
+            next(new NotFoundException('Address not Found', ErrorCode.ADDRESS_NOT_FOUND))
+        }
+    }
+    const updatedUser = await prismaClient.user.update({
+        where: { id: req.user.id } 
+        data: validatedData
+    })
+    res.json(updatedUser)
 }
