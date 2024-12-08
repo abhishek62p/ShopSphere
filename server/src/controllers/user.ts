@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AddressSchema, UpdateSchema } from "../schema/user";
+import { AddressSchema, UpdateUserSchema } from "../schema/user";
 import { NotFoundException } from "../exceptions/not-found";
 import { ErrorCode } from "../exceptions/root";
 import { Address, User } from "@prisma/client";
@@ -54,12 +54,12 @@ export const listAddress = async (req: Request, res: Response) => {
 }
 
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
-    const validatedData = UpdateSchema.parse(req.body)
-    let shippingAddress: Address
-    let billingAddress: Address
+    const validatedData = UpdateUserSchema.parse(req.body)
+    // let shippingAddress: Address
+    // let billingAddress: Address
     if (validatedData.defaultShippingAddress) {
         try {
-            shippingAddress = await prismaClient.address.findFirstOrThrow({
+            const shippingAddress = await prismaClient.address.findFirstOrThrow({
                 where: {
                     id: validatedData.defaultShippingAddress
                 }
@@ -73,7 +73,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     }
     if (validatedData.defaultBillingAddress) {
         try {
-            billingAddress = await prismaClient.address.findFirstOrThrow({
+            const billingAddress = await prismaClient.address.findFirstOrThrow({
                 where: {
                     id: validatedData.defaultBillingAddress
                 }
@@ -86,7 +86,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
         }
     }
     const updatedUser = await prismaClient.user.update({
-        where: { id: req.user.id } 
+        where: { id: req.user.id }, 
         data: validatedData
     })
     res.json(updatedUser)

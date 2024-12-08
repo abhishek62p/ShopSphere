@@ -16,7 +16,7 @@ export const AddressSchema = zod.object({
     userId: zod.number()
 })
 
-export const UpdateSchema = zod.object({
+export const UpdateUserSchema = zod.object({
     name: zod.string().nullable(),
     defaultShippingAddress: zod.number().nullable(),
     defaultBillingAddress: zod.number().nullable()

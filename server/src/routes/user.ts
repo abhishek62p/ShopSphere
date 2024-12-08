@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { errorHandler } from "../schema/error-handler";
+import { errorHandler } from "../error-handler";
 import authMiddleware from "../middlewares/auth";
 import adminMiddleware from "../middlewares/admin";
 import { addAddress, deleteAddress, listAddress, updateUser } from "../controllers/user";

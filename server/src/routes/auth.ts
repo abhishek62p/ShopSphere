@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { login, me, signup } from "../controllers/auth";
-import { errorHandler } from "../schema/error-handler";
+import { errorHandler } from "../error-handler";
 import authMiddleware from "../middlewares/auth";
 
 const authRoutes:Router = Router()
